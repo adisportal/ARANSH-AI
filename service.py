@@ -1,6 +1,12 @@
-# service.py
 from time import sleep
-while True:
-    print("Aransh Service is running...")
-    sleep(60)
+from jnius import autoclass
 
+# This helps the service restart if Android tries to close it
+PythonService = autoclass('org.kivy.android.PythonService')
+if hasattr(PythonService, 'mService'):
+    PythonService.mService.setAutoRestartService(True)
+
+while True:
+    # This is where your earbud-listening logic will go
+    print("Aransh Service is active...")
+    sleep(10) 
