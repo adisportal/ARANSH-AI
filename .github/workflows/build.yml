@@ -4,28 +4,26 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # This fixes the Node.js warning and potential lockout
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4  # Updated to v4
+      - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev openjdk-17-jdk
+          pip install --user --upgrade buildozer cython==0.29.33
 
-      - name: Set up Python
-        uses: actions/setup-python@v5  # Updated to v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade buildozer cython==0.29.33
-          
       - name: Build with Buildozer
-        run: yes y | buildozer android debug
-
+        run: |
+          # This ensures the local path is used, avoiding the Code 100 permission error
+          export PATH=$PATH:$HOME/.local/bin
+          yes y | buildozer android debug
+        
       - name: Upload APK
-        uses: actions/upload-artifact@v4  # Fixed the v3 error here!
+        uses: actions/upload-artifact@v4
         with:
           name: Aransh-AI-APK
           path: bin/*.apk
