@@ -6,26 +6,29 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
-# Added 'android' and 'requests' which you might need for searching
+# Added 'android' and 'requests' for assistant functionality
 requirements = python3,kivy,plyer,android,requests
 
-# Permissions for Earbuds and Mic
-android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN
+# Permissions for Earbuds, Mic, and Foreground Services
+android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE
 
-# Targeting modern Samsung devices
 android.api = 33
 android.minapi = 21
-android.ndk = 25b
+android.ndk = 25c
 android.accept_sdk_license = True
-android.archs = arm64-v8a
+android.archs = armeabi-v7a, arm64-v8a
 
-# --- THE MAGIC LINK ---
-# This injects your earbud-trigger code into the App Manifest
+# --- THE ASSISTANT TRIGGER ---
 android.manifest.intent_filters = intent_filters.xml
 
-# Ensure the app doesn't close immediately in the background
-android.services = AranshService:service.py
+# --- THE BACKGROUND SERVICE ---
+# Format: Name:File:Foreground:Sticky
+# 'foreground' keeps it alive, 'sticky' restarts it if it crashes.
+android.services = AranshService:service.py:foreground:sticky
+
+orientation = portrait
+android.private_storage = True
 
 [buildozer]
-log_level = 2
+log_level = 1
 warn_on_root = 1
