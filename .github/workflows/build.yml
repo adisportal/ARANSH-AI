@@ -4,23 +4,28 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Build Tools
+      - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk
-          pip install --user --upgrade buildozer cython==0.29.33
+          # Using a stable version of Buildozer for GitHub runners
+          pip install --user --upgrade buildozer==1.5.0 cython==0.29.33
 
-      - name: Run Buildozer
+      - name: Build with Buildozer
         run: |
-          # This line fixes the 'Exit Code 100' permission bug
           export PATH=$PATH:$HOME/.local/bin
+          # This command clears any 'bad' previous attempts
+          buildozer android clean
+          # This builds the APK and automatically handles the license
           yes y | buildozer android debug
-
+        
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Aransh-APK
+          name: Aransh-AI-APK
           path: bin/*.apk
