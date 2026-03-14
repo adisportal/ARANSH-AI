@@ -6,10 +6,10 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
-# --- FIXED REQUIREMENTS ---
-# Removed 'android' and 'pyjnius' to prevent the toolchain conflict
-# Added 'certifi' for secure SSL/HTTPS connections
-requirements = python3,kivy==2.3.0,plyer,requests,certifi,openssl,sh
+# --- LIGHTWEIGHT REQUIREMENTS ---
+# Removed 'sh' and 'openssl' as they often cause the 'Broken pipe' error on GitHub
+# Buildozer includes 'android' and 'pyjnius' automatically, so we keep it clean
+requirements = python3,kivy==2.3.0,plyer,requests,certifi
 
 # Permissions for Earbuds, Mic, and Background Service
 android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE, WAKE_LOCK
@@ -17,11 +17,13 @@ android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETO
 # Targeting modern Samsung (Android 13+)
 android.api = 33
 android.minapi = 21
-# Matches the recommended version from your log
+# Matches the recommended version from your previous successful log steps
 android.ndk = 25b
 android.accept_sdk_license = True
-# Builds for both 64-bit and 32-bit Samsung processors
-android.archs = arm64-v8a, armeabi-v7a
+
+# --- FOCUS ON YOUR PHONE ---
+# Building ONLY for arm64-v8a (Samsung M35) makes the build 2x faster and much more stable
+android.archs = arm64-v8a
 
 # Link to your earbud trigger file
 android.manifest.intent_filters = intent_filters.xml
@@ -35,6 +37,6 @@ android.private_storage = True
 android.presplash_color = #FFFFFF 
 
 [buildozer]
-# Kept at 2 so we can see the exact line if a compilation error occurs
+# Level 2 is required to see the real error hidden behind the 'Broken pipe'
 log_level = 2
 warn_on_root = 1
