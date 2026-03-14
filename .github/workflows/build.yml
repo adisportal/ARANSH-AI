@@ -9,19 +9,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install All System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk
-          # Using a stable version of Buildozer for GitHub runners
+          # Added autoconf, automake, libtool, and pkg-config to fix the 'autoreconf' crash
+          sudo apt install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk autoconf automake libtool pkg-config
           pip install --user --upgrade buildozer==1.5.0 cython==0.29.33
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # This command clears any 'bad' previous attempts
+          # This command is critical: it wipes previous broken build files
           buildozer android clean
-          # This builds the APK and automatically handles the license
+          # Start the build and auto-accept licenses
           yes y | buildozer android debug
         
       - name: Upload APK
