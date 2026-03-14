@@ -9,17 +9,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install System Dependencies
+      - name: Install System Dependencies (With Retry)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk autoconf automake libtool pkg-config
+          # This loop handles potential server congestion
+          for i in {1..3}; do
+            sudo apt-get update && \
+            sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk autoconf automake libtool pkg-config && break || sleep 15;
+          done
           pip install --user --upgrade buildozer==1.5.0 cython==0.29.33
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # REMOVED the 'clean' command to avoid the FileNotFoundError
-          # The 'yes y' automatically accepts the Android SDK licenses
+          # Removed 'clean' to prevent FileNotFoundError
+          # yes y handles all the Android SDK license prompts automatically
           yes y | buildozer android debug
         
       - name: Upload APK
