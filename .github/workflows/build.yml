@@ -5,23 +5,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      # This fixes the Node.js warning from your screenshot
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install All System Dependencies
+      - name: Install All Missing Tools
         run: |
           sudo apt update
-          # Added autoconf, automake, libtool, and pkg-config to fix the 'autoreconf' crash
+          # These are the exact tools required to fix the 'autoreconf' error
           sudo apt install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev libtinfo5 cmake openjdk-17-jdk autoconf automake libtool pkg-config
           pip install --user --upgrade buildozer==1.5.0 cython==0.29.33
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # This command is critical: it wipes previous broken build files
+          # Clean out any 'broken' files from your last 8 attempts
           buildozer android clean
-          # Start the build and auto-accept licenses
+          # Start the build and auto-accept the Android licenses
           yes y | buildozer android debug
         
       - name: Upload APK
