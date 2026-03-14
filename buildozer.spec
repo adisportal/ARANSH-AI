@@ -6,36 +6,35 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
-# --- NEW FEATURES ---
-# Added 'sh' for better shell commands and 'openssl' for secure internet (SSL/HTTPS)
-# Added 'kivy==2.3.0' to ensure stability on modern Android
-requirements = python3,kivy==2.3.0,plyer,android,requests,pyjnius,sh,openssl
+# --- FIXED REQUIREMENTS ---
+# Removed 'android' and 'pyjnius' to prevent the toolchain conflict
+# Added 'certifi' for secure SSL/HTTPS connections
+requirements = python3,kivy==2.3.0,plyer,requests,certifi,openssl,sh
 
-# Permissions for Earbuds, Mic, and the Background Service
+# Permissions for Earbuds, Mic, and Background Service
 android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE, WAKE_LOCK
 
-# Settings for modern Samsung phones
+# Targeting modern Samsung (Android 13+)
 android.api = 33
 android.minapi = 21
+# Matches the recommended version from your log
 android.ndk = 25b
 android.accept_sdk_license = True
-# Building for both 64-bit (modern) and 32-bit (older) ensures it works on all Samsung M-series
+# Builds for both 64-bit and 32-bit Samsung processors
 android.archs = arm64-v8a, armeabi-v7a
 
-# Link to your assistant trigger file
+# Link to your earbud trigger file
 android.manifest.intent_filters = intent_filters.xml
 
-# --- IMPROVED SERVICE ---
-# Added 'sticky' so Android restarts the service automatically if it ever runs out of RAM
+# THE SERVICE: Keeps Aransh alive in the background
+# 'sticky' ensures it restarts if Android kills it for RAM
 android.services = AranshService:service.py:foreground:sticky
 
-# Visuals
 orientation = portrait
 android.private_storage = True
-# Ensures the screen doesn't flicker during start
 android.presplash_color = #FFFFFF 
 
 [buildozer]
-# Raised to 2 so we can see exactly what is happening if a crash occurs
+# Kept at 2 so we can see the exact line if a compilation error occurs
 log_level = 2
 warn_on_root = 1
