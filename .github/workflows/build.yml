@@ -3,8 +3,6 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    # CRITICAL FIX: Ubuntu 22.04 is the 'Gold Standard' for Buildozer.
-    # It avoids the memory/pipe errors found in 24.04.
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -21,15 +19,15 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          # These libraries exist natively on 22.04 - no wget needed!
           sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev cmake openjdk-17-jdk autoconf automake libtool pkg-config
           pip install --user --upgrade "buildozer>=1.5.0" "cython<3.0" virtualenv
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Cleaning ensure old corrupted build data is removed
-          buildozer android clean
+          # Safe Clean: Deletes the folder only if it exists, preventing FileNotFoundError
+          rm -rf .buildozer/
+          # Start the build
           yes y | buildozer android debug
         
       - name: Upload APK
