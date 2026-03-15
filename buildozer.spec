@@ -7,9 +7,9 @@ source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
 # --- ALL FEATURES ENABLED ---
-# hostpython3: Required for stability on GitHub Actions
-# sh & openssl: For assistant intelligence and secure web calls
-requirements = python3,kivy,plyer,requests,certifi,hostpython3,sh,openssl
+# Requirements optimized for Ubuntu 22.04 stability.
+# Openssl and Certifi remain for secure AI/HTTPS web calls.
+requirements = python3,kivy==2.3.0,plyer,requests,certifi,openssl
 
 # Permissions for Earbuds, Mic, and Background Service
 android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE, WAKE_LOCK
@@ -17,11 +17,11 @@ android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETO
 # Targeting modern Samsung (Android 13+ / M35)
 android.api = 33
 android.minapi = 21
-# Locked to 25b as per your build logs
+# Locked to 25b as per your successful path logs
 android.ndk = 25b
 android.accept_sdk_license = True
 
-# Focused on Samsung M35
+# Focused on Samsung M35 (64-bit)
 android.archs = arm64-v8a
 
 # Link to your assistant trigger file
