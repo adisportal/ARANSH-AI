@@ -20,14 +20,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev cmake openjdk-17-jdk autoconf automake libtool pkg-config
-          # We lock Cython to 0.29.33 - the most stable version for this NDK
           pip install --user --upgrade "buildozer>=1.5.0" "cython==0.29.33" virtualenv
 
-      - name: Build with Buildozer
+      - name: Build with Buildozer (Pure Debug Mode)
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # 'yes y' is fine, but we let buildozer run normally first
-          yes y | buildozer android debug
+          # We use -v (verbose) and remove 'yes y |' to see the REAL error.
+          # APP_ANDROID_ACCEPT_SDK_LICENSE=1 handles the license prompt silently.
+          APP_ANDROID_ACCEPT_SDK_LICENSE=1 buildozer -v android debug
         
       - name: Upload APK
         uses: actions/upload-artifact@v4
