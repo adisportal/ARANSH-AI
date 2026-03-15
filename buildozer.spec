@@ -1,3 +1,4 @@
+
 [app]
 title = Aransh AI
 package.name = aranshai
@@ -6,23 +7,22 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
-# --- STABILITY UPDATES ---
-# 1. Added hostpython3: This is the 'magic' fix for memory crashes on GitHub.
-# 2. Removed version lock on Kivy: Lets Buildozer pick the most compatible local version.
-requirements = python3,kivy,plyer,requests,certifi,hostpython3
+# --- ALL FEATURES ENABLED ---
+# hostpython3: Required for stability on GitHub Actions
+# sh & openssl: For assistant intelligence and secure web calls
+requirements = python3,kivy,plyer,requests,certifi,hostpython3,sh,openssl
 
 # Permissions for Earbuds, Mic, and Background Service
 android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE, WAKE_LOCK
 
-# Targeting modern Samsung (Android 13+)
+# Targeting modern Samsung (Android 13+ / M35)
 android.api = 33
 android.minapi = 21
-# Matches the recommended version from your log
+# Locked to 25b as per your build logs
 android.ndk = 25b
 android.accept_sdk_license = True
 
-# --- ARCHITECTURE ---
-# Building only for arm64-v8a (Samsung M35) to save 50% build time and RAM.
+# Focused on Samsung M35
 android.archs = arm64-v8a
 
 # Link to your assistant trigger file
@@ -36,6 +36,6 @@ android.private_storage = True
 android.presplash_color = #FFFFFF 
 
 [buildozer]
-# Level 2 is vital so we can see the exact line if a C-compilation fails.
+# Level 2 ensures we see any hidden C-compilation errors
 log_level = 2
 warn_on_root = 1
