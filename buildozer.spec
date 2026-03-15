@@ -1,4 +1,3 @@
-
 [app]
 title = Aransh AI
 package.name = aranshai
