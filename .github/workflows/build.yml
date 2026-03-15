@@ -3,7 +3,8 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # CRITICAL: We use 22.04 because 24.04/latest is incompatible with Android NDKs
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -16,17 +17,12 @@ jobs:
           sudo mkswap /swapfile
           sudo swapon /swapfile
 
-      - name: Install Legacy Dependencies (Ubuntu 24.04 Fix)
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          # Force download of legacy libraries from official security pool
-          wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-          wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libncurses5_6.3-2ubuntu0.1_amd64.deb
-          sudo apt install -y ./libtinfo5_6.3-2ubuntu0.1_amd64.deb ./libncurses5_6.3-2ubuntu0.1_amd64.deb
-          
-          # Install standard tools (Removed the failing legacy names)
-          sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev cmake openjdk-17-jdk autoconf automake libtool pkg-config
-          pip install --user --upgrade "buildozer>=1.5.0" "cython<3.0"
+          # These libraries ONLY exist on 22.04, which is why 24.04 was failing
+          sudo apt-get install -y build-essential git python3 zip unzip zlib1g-dev libffi-dev libssl-dev libtinfo5 libncursesw5 libncurses5-dev libncursesw5-dev cmake openjdk-17-jdk autoconf automake libtool pkg-config
+          pip install --user --upgrade buildozer "cython<3.0" virtualenv
 
       - name: Build with Buildozer
         run: |
