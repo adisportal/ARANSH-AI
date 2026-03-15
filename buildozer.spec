@@ -6,10 +6,10 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,xml
 version = 0.1
 
-# --- LIGHTWEIGHT REQUIREMENTS ---
-# Removed 'sh' and 'openssl' as they often cause the 'Broken pipe' error on GitHub
-# Buildozer includes 'android' and 'pyjnius' automatically, so we keep it clean
-requirements = python3,kivy==2.3.0,plyer,requests,certifi
+# --- STABILITY UPDATES ---
+# 1. Added hostpython3: This is the 'magic' fix for memory crashes on GitHub.
+# 2. Removed version lock on Kivy: Lets Buildozer pick the most compatible local version.
+requirements = python3,kivy,plyer,requests,certifi,hostpython3
 
 # Permissions for Earbuds, Mic, and Background Service
 android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETOOTH_CONNECT, BLUETOOTH_SCAN, FOREGROUND_SERVICE, WAKE_LOCK
@@ -17,19 +17,18 @@ android.permissions = RECORD_AUDIO, BLUETOOTH, BLUETOOTH_ADMIN, INTERNET, BLUETO
 # Targeting modern Samsung (Android 13+)
 android.api = 33
 android.minapi = 21
-# Matches the recommended version from your previous successful log steps
+# Matches the recommended version from your log
 android.ndk = 25b
 android.accept_sdk_license = True
 
-# --- FOCUS ON YOUR PHONE ---
-# Building ONLY for arm64-v8a (Samsung M35) makes the build 2x faster and much more stable
+# --- ARCHITECTURE ---
+# Building only for arm64-v8a (Samsung M35) to save 50% build time and RAM.
 android.archs = arm64-v8a
 
-# Link to your earbud trigger file
+# Link to your assistant trigger file
 android.manifest.intent_filters = intent_filters.xml
 
 # THE SERVICE: Keeps Aransh alive in the background
-# 'sticky' ensures it restarts if Android kills it for RAM
 android.services = AranshService:service.py:foreground:sticky
 
 orientation = portrait
@@ -37,6 +36,6 @@ android.private_storage = True
 android.presplash_color = #FFFFFF 
 
 [buildozer]
-# Level 2 is required to see the real error hidden behind the 'Broken pipe'
+# Level 2 is vital so we can see the exact line if a C-compilation fails.
 log_level = 2
 warn_on_root = 1
